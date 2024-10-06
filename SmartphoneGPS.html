@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GPS Tracker</title>
+</head>
+<body>
+    <h1>GPS Tracker</h1>
+    <button onclick="getLocation()">Get Location</button>
+    <p id="status"></p>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendPosition);
+            } else {
+                document.getElementById("status").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function sendPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            document.getElementById("status").innerHTML = `Latitude: ${lat}, Longitude: ${lon}`;
+            
+            // ارسال به سرور Flask
+            fetch("http://192.168.0.138:5001/location", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    latitude: lat,
+                    longitude: lon
+                })
+            });
+        }
+    </script>
+</body>
+</html>
